@@ -315,32 +315,64 @@
   /* LOCATION CARDS */
   .location-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
     margin-top: 4px;
   }
   .location-card {
-    padding: 20px 20px;
+    padding: 18px 20px;
     background: var(--cream);
     border: 2px solid rgba(139,115,85,0.2);
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
+    position: relative;
   }
   .location-card.selected {
     border-color: var(--terra);
     background: #fff;
   }
+  .location-card.selected::after {
+    content: "✓";
+    position: absolute;
+    top: 12px; right: 14px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--terra);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 20px;
+    text-align: center;
+  }
+  .location-badge {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--bark);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
   .location-name {
     font-family: 'Playfair Display', serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--ink);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
   .location-detail {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--bark);
     font-weight: 300;
+    margin-bottom: 10px;
+  }
+  .location-price {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--terra);
+    letter-spacing: 0.5px;
   }
 
   /* CONTRACT OPTIONS */
@@ -733,22 +765,55 @@
 
     <div class="field" style="margin-bottom:32px;">
       <label>Preferred Location <span class="req">*</span></label>
-      <div class="location-grid">
-        <div class="location-card" onclick="selectCard(this, 'location')" data-val="Geelong Westfield">
+      <p style="font-size:12px; color:var(--bark); margin-bottom:14px; font-weight:300;">Select all locations you'd be open to. Pricing is indicative weekly licence fee.</p>
+      <div class="location-grid" id="location-grid">
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Doncaster">
+          <div class="location-badge">Inner East · Melbourne</div>
+          <div class="location-name">Doncaster</div>
+          <div class="location-detail">Williamsons Rd, Doncaster · 12km from CBD</div>
+          <div class="location-price">~$400 / wk</div>
+        </div>
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Southland">
+          <div class="location-badge">South · Melbourne</div>
+          <div class="location-name">Southland</div>
+          <div class="location-detail">Nepean Hwy, Cheltenham · 19km from CBD</div>
+          <div class="location-price">~$400 / wk</div>
+        </div>
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Airport West">
+          <div class="location-badge">North West · Melbourne</div>
+          <div class="location-name">Airport West</div>
+          <div class="location-detail">Louis St, Airport West · Northwest suburbs</div>
+          <div class="location-price">~$370 / wk</div>
+        </div>
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Knox">
+          <div class="location-badge">East · Melbourne</div>
+          <div class="location-name">Knox</div>
+          <div class="location-detail">Burwood Hwy, Wantirna South · 17km from CBD</div>
+          <div class="location-price">~$370 / wk</div>
+        </div>
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Fountain Gate">
+          <div class="location-badge">South East · Melbourne</div>
+          <div class="location-name">Fountain Gate</div>
+          <div class="location-detail">Princes Hwy, Narre Warren · Outer southeast</div>
+          <div class="location-price">~$370 / wk</div>
+        </div>
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Plenty Valley">
+          <div class="location-badge">North · Melbourne</div>
+          <div class="location-name">Plenty Valley</div>
+          <div class="location-detail">McDonalds Rd, Mill Park · Outer north</div>
+          <div class="location-price">~$340 / wk</div>
+        </div>
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Geelong">
+          <div class="location-badge">Regional · Geelong</div>
           <div class="location-name">Geelong</div>
-          <div class="location-detail">Westfield Geelong · City centre</div>
+          <div class="location-detail">Moorabool St, Geelong · City centre</div>
+          <div class="location-price">~$300 / wk</div>
         </div>
-        <div class="location-card" onclick="selectCard(this, 'location')" data-val="Waurn Ponds">
+        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Geelong Waurn Ponds">
+          <div class="location-badge">Regional · Geelong</div>
           <div class="location-name">Waurn Ponds</div>
-          <div class="location-detail">Waurn Ponds Shopping Centre · South Geelong</div>
-        </div>
-        <div class="location-card" onclick="selectCard(this, 'location')" data-val="No preference">
-          <div class="location-name">No preference</div>
-          <div class="location-detail">Happy with either location</div>
-        </div>
-        <div class="location-card" onclick="selectCard(this, 'location')" data-val="Open to discussion">
-          <div class="location-name">Open to discussion</div>
-          <div class="location-detail">Let's talk about what works best</div>
+          <div class="location-detail">Princes Hwy, Waurn Ponds · South Geelong</div>
+          <div class="location-price">~$300 / wk</div>
         </div>
       </div>
     </div>
@@ -848,9 +913,9 @@
       else el.classList.remove('invalid');
     });
     if (step === 4) {
-      const loc = document.querySelector('.location-card.selected');
+      const locs = document.querySelectorAll('.location-card.selected');
       const con = document.querySelector('.contract-card.selected');
-      if (!loc || !con) valid = false;
+      if (!locs.length || !con) valid = false;
     }
     return valid;
   }
@@ -867,9 +932,13 @@
 
   function prevStep(step) { goToStep(step - 1); }
 
+  function toggleLocation(el) {
+    el.classList.toggle('selected');
+  }
+
   function selectCard(el, group) {
-    el.closest('.location-grid, .contract-grid')
-      .querySelectorAll('.location-card, .contract-card')
+    el.closest('.contract-grid')
+      .querySelectorAll('.contract-card')
       .forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
   }
@@ -885,7 +954,7 @@
   }
 
   function buildReview() {
-    const loc = document.querySelector('.location-card.selected');
+    // locations handled via multi-select
     const con = document.querySelector('.contract-card.selected');
     const pli = document.getElementById('toggle-pli').classList.contains('on') ? 'Yes' : 'No';
     const channels = Array.from(document.querySelectorAll('#channels .check-pill.checked')).map(e => e.textContent.trim()).join(', ') || '—';
@@ -917,7 +986,7 @@
       </div>
       <div class="review-section">
         <div class="review-section-title">Preferences</div>
-        <div class="review-row"><div class="review-key">Location</div><div class="review-val">${loc ? loc.dataset.val : '—'}</div></div>
+        <div class="review-row"><div class="review-key">Location(s)</div><div class="review-val">${Array.from(document.querySelectorAll('.location-card.selected')).map(e => e.dataset.val).join(', ') || '—'}</div></div>
         <div class="review-row"><div class="review-key">Contract</div><div class="review-val">${con ? con.dataset.val : '—'}</div></div>
         <div class="review-row"><div class="review-key">Notes</div><div class="review-val">${v('f-extra') || '—'}</div></div>
       </div>
