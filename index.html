@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Common Ground — Curated Retail Collective</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Pacifico&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink:       #2C2416;
+    --cream:     #F5F0E8;
+    --bark:      #8B7355;
+    --bark-l:    #C4A882;
+    --terra:     #C4613A;
+    --sage:      #6B7C5C;
+    --sage-l:    #A8B89A;
+    --mist:      #EDE8DE;
+    --aged:      #E2D8C0;
+    --orange:    #C4621A;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(245, 240, 232, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(139,115,85,0.15);
+  }
+  .nav-wordmark {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.5px;
+  }
+  .nav-wordmark em { font-style: italic; color: var(--terra); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--bark);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--terra); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 120px 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative circles */
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    border: 1px solid rgba(196,168,130,0.12);
+    right: -200px; top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .hero-circle-inner {
+    position: absolute;
+    width: 480px; height: 480px;
+    border-radius: 50%;
+    border: 1px solid rgba(196,168,130,0.08);
+    right: -80px; top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  /* Orange medallion behind logo */
+  .hero-medallion {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 360px; height: 360px;
+    border-radius: 50%;
+    background: var(--orange);
+    opacity: 0.15;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--bark-l);
+    margin-bottom: 28px;
+    font-weight: 400;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(64px, 9vw, 110px);
+    font-weight: 700;
+    line-height: 1.0;
+    color: var(--cream);
+    margin-bottom: 0;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--terra);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(245,240,232,0.55);
+    max-width: 460px;
+    margin-top: 36px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.6s forwards;
+  }
+
+  .hero-cta {
+    margin-top: 52px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.8s forwards;
+  }
+  .btn-primary {
+    background: var(--terra);
+    color: var(--cream);
+    border: none;
+    padding: 16px 36px;
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: #B05530; transform: translateY(-1px); }
+  .btn-ghost {
+    color: var(--bark-l);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 400;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(196,168,130,0.3);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--cream); border-color: var(--cream); }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px; left: 60px;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--bark);
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+  .scroll-hint::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--bark);
+    animation: expand 2s ease-in-out infinite;
+  }
+  @keyframes expand {
+    0%,100% { width: 30px; opacity: 0.4; }
+    50% { width: 55px; opacity: 1; }
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 100px 60px; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--bark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-label::after {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--bark-l);
+    opacity: 0.5;
+  }
+
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4.5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 28px;
+  }
+  .section-heading em { font-style: italic; color: var(--terra); }
+
+  .section-body {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #5A4F40;
+    max-width: 560px;
+    font-weight: 300;
+  }
+
+  /* ── PROBLEM ── */
+  .problem { background: var(--mist); }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+  }
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 52px;
+  }
+  .stat-card {
+    background: var(--cream);
+    border: 1px solid rgba(139,115,85,0.15);
+    padding: 28px 20px;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--terra);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--bark);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .problem-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .problem-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(139,115,85,0.12);
+  }
+  .problem-item:first-child { border-top: 1px solid rgba(139,115,85,0.12); }
+  .problem-item-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .problem-item-body {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--bark);
+    font-weight: 300;
+  }
+
+  /* ── CONCEPT ── */
+  .concept { background: var(--cream); }
+  .concept-inner {
+    max-width: 1100px;
+  }
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 52px;
+  }
+  .concept-card {
+    background: var(--mist);
+    padding: 36px 32px;
+    border-left: 3px solid var(--terra);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .concept-card:nth-child(2) { border-color: var(--sage); }
+  .concept-card:nth-child(3) { border-color: var(--bark); }
+  .concept-card:nth-child(4) { border-color: var(--ink); }
+  .concept-card:hover { transform: translateY(-3px); }
+  .concept-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .concept-card-body {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #5A4F40;
+    font-weight: 300;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote {
+    background: var(--ink);
+    padding: 100px 60px;
+    text-align: center;
+  }
+  .pull-quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3.5vw, 38px);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--cream);
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .pull-quote-text em { color: var(--terra); font-style: normal; }
+  .pull-quote-rule {
+    width: 48px; height: 2px;
+    background: var(--terra);
+    margin: 36px auto 0;
+  }
+
+  /* ── VIDEO ── */
+  .video-section { background: var(--aged); }
+  .video-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .video-inner .section-label { justify-content: center; }
+  .video-inner .section-label::after { display: none; }
+  .video-inner .section-heading { text-align: center; }
+  .video-wrapper {
+    margin-top: 52px;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    background: var(--ink);
+    border: 1px solid rgba(139,115,85,0.2);
+  }
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+  .video-placeholder {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--ink);
+  }
+  .video-placeholder-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--bark);
+    letter-spacing: 1px;
+  }
+  .play-btn {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(196,168,130,0.3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn::after {
+    content: '';
+    width: 0; height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 20px solid var(--bark-l);
+    margin-left: 4px;
+  }
+
+  /* ── TENSION ── */
+  .tension { background: var(--ink); }
+  .tension .section-label { color: var(--bark-l); }
+  .tension .section-heading { color: var(--cream); }
+  .tension-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 52px;
+    max-width: 1100px;
+  }
+  .tension-card {
+    background: #1E180E;
+    padding: 36px 28px;
+  }
+  .tension-tag {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .tension-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 14px;
+  }
+  .tension-challenge {
+    font-size: 13px;
+    line-height: 1.75;
+    color: #8A7A68;
+    font-weight: 300;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(139,115,85,0.15);
+  }
+  .tension-response-tag {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage-l);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .tension-response {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--sage-l);
+    font-weight: 300;
+  }
+
+  /* ── WAITLIST / CTA ── */
+  .waitlist { background: var(--terra); padding: 100px 60px; }
+  .waitlist-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+  .waitlist .section-label { justify-content: center; color: rgba(245,240,232,0.6); }
+  .waitlist .section-label::after { display: none; }
+  .waitlist .section-heading { color: var(--cream); text-align: center; }
+  .waitlist .section-body { color: rgba(245,240,232,0.75); margin: 0 auto 48px; text-align: center; }
+
+  .form-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    border: 1px solid rgba(245,240,232,0.25);
+    max-width: 400px;
+    margin: 0 auto 32px;
+  }
+  .form-tab {
+    flex: 1;
+    padding: 12px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s, color 0.2s;
+    background: transparent;
+    color: rgba(245,240,232,0.6);
+  }
+  .form-tab.active {
+    background: rgba(245,240,232,0.15);
+    color: var(--cream);
+  }
+
+  .email-form {
+    display: flex;
+    gap: 0;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .email-input {
+    flex: 1;
+    padding: 16px 20px;
+    background: rgba(245,240,232,0.1);
+    border: 1px solid rgba(245,240,232,0.25);
+    border-right: none;
+    color: var(--cream);
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    outline: none;
+  }
+  .email-input::placeholder { color: rgba(245,240,232,0.4); }
+  .email-input:focus { background: rgba(245,240,232,0.15); }
+  .submit-btn {
+    padding: 16px 32px;
+    background: var(--ink);
+    color: var(--cream);
+    border: 1px solid var(--ink);
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .submit-btn:hover { background: #1A0E08; }
+  .form-note {
+    margin-top: 16px;
+    font-size: 11px;
+    color: rgba(245,240,232,0.45);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #1A120A;
+    padding: 48px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-wordmark {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .footer-wordmark em { font-style: italic; color: var(--terra); }
+  .footer-tagline {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--bark);
+    margin-top: 4px;
+  }
+  .footer-right {
+    font-size: 11px;
+    color: var(--bark);
+    letter-spacing: 1px;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.75s ease, transform 0.75s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SAGE DIVIDER ── */
+  .sage-divider {
+    height: 6px;
+    background: var(--sage);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section { padding: 72px 24px; }
+    .hero { padding: 100px 24px 72px; }
+    .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+    .concept-grid { grid-template-columns: 1fr; }
+    .tension-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr; }
+    .email-form { flex-direction: column; }
+    .email-input { border-right: 1px solid rgba(245,240,232,0.25); border-bottom: none; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-right { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-wordmark">Common <em>Ground</em></div>
+  <ul class="nav-links">
+    <li><a href="#concept">The Concept</a></li>
+    <li><a href="#video">Our Story</a></li>
+    <li><a href="#tension">The Tension</a></li>
+    <li><a href="#waitlist">Join Us</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-medallion"></div>
+  <div class="hero-circle-inner"></div>
+  <div class="hero-eyebrow">A curated retail collective · Australia</div>
+  <h1 class="hero-title">
+    Common
+    <em>Ground.</em>
+  </h1>
+  <p class="hero-sub">Where independent Australian makers finally have a retail home. Curated, shared, permanent — and built on the belief that the right shelf changes everything.</p>
+  <div class="hero-cta">
+    <a href="#waitlist" class="btn-primary">Get Early Access</a>
+    <a href="#concept" class="btn-ghost">Learn more</a>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<div class="sage-divider"></div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="problem-grid">
+    <div>
+      <div class="section-label reveal">01 — The Problem</div>
+      <h2 class="section-heading reveal reveal-delay-1">Empty stores,<br><em>hungry consumers.</em></h2>
+      <p class="section-body reveal reveal-delay-2">Independent makers are talented, prolific, and invisible. Traditional retail requires volume and margin most can't sustain. Markets are inconsistent. Online channels are algorithmically brutal. The infrastructure works against the SME.</p>
+      <div class="stat-row">
+        <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-num">94%</div>
+          <div class="stat-label">of Australian makers are sole traders</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-num">3 in 4</div>
+          <div class="stat-label">consumers prefer local when discovery is easy</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <div class="stat-num">60%</div>
+          <div class="stat-label">of indie makers exit retail within 2 years</div>
+        </div>
+      </div>
+    </div>
+    <div class="problem-right reveal reveal-delay-1">
+      <div class="problem-item">
+        <div class="problem-item-title">Wholesale is out of reach</div>
+        <div class="problem-item-body">Traditional wholesale demands minimum order quantities and margins that most independent makers simply can't meet at small scale.</div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-item-title">Markets aren't a business model</div>
+        <div class="problem-item-body">Weekend markets require physical presence every week. They're inconsistent, exhausting, and offer no path to stable retail income.</div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-item-title">Online channels are saturated</div>
+        <div class="problem-item-body">Etsy, Instagram, and direct-to-consumer platforms reward advertising spend over craft quality. Discovery is broken for the independent maker.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<div class="pull-quote">
+  <p class="pull-quote-text reveal">"Curation is infrastructure. When a trusted editor does the work of discovery, <em>the consumer follows.</em>"</p>
+  <div class="pull-quote-rule reveal"></div>
+</div>
+
+<!-- CONCEPT -->
+<section class="concept" id="concept">
+  <div class="concept-inner">
+    <div class="section-label reveal">03 — The Concept</div>
+    <h2 class="section-heading reveal reveal-delay-1">Housemates,<br><em>for businesses.</em></h2>
+    <p class="section-body reveal reveal-delay-2">Common Ground is a curated physical retail space where independent Australian makers share a storefront, costs, and a collective brand identity. Each maker keeps their story — we provide the shelf, the foot traffic, and the editorial stamp of quality.</p>
+    <div class="concept-grid">
+      <div class="concept-card reveal reveal-delay-1">
+        <div class="concept-card-title">Curated entry</div>
+        <div class="concept-card-body">Makers apply and are selected on quality, craft, and category fit. The curation is the product — it's what makes the space worth walking into.</div>
+      </div>
+      <div class="concept-card reveal reveal-delay-2">
+        <div class="concept-card-title">Shared economics</div>
+        <div class="concept-card-body">Monthly licence fee plus commission on sales. No upfront wholesale risk. Turning inclines into staircases — the prohibitive cost of an entire store divided into something manageable.</div>
+      </div>
+      <div class="concept-card reveal reveal-delay-1">
+        <div class="concept-card-title">Permanent presence</div>
+        <div class="concept-card-body">A staffed, permanent retail location. Not a pop-up. Not a market stall. A destination that builds consumer habit and return visits — without requiring makers to be present.</div>
+      </div>
+      <div class="concept-card reveal reveal-delay-2">
+        <div class="concept-card-title">Collective identity</div>
+        <div class="concept-card-body">The Common Ground brand does the marketing heavy lifting. Every campaign lifts all makers. The whole is greater than the sum of its parts.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sage-divider"></div>
+
+<!-- VIDEO -->
+<section class="video-section" id="video">
+  <div class="video-inner">
+    <div class="section-label">Our Story</div>
+    <h2 class="section-heading reveal"><em>See it</em> in action.</h2>
+    <p class="section-body reveal reveal-delay-1" style="margin: 0 auto 0; text-align:center;">A short overview of the Common Ground concept — who it's for, how it works, and why now.</p>
+    <div class="video-wrapper reveal reveal-delay-2">
+      <!--
+        TO EMBED YOUR VIDEO:
+        Replace the div.video-placeholder below with an iframe, e.g.:
+        <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
+        or for Vimeo:
+        <iframe src="https://player.vimeo.com/video/YOUR_VIDEO_ID" allowfullscreen></iframe>
+      -->
+      <div class="video-placeholder">
+        <div class="play-btn"></div>
+        <div class="video-placeholder-text">Embed your video here</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TENSION -->
+<section class="tension" id="tension">
+  <div class="section-label reveal">05 — The Tension</div>
+  <h2 class="section-heading reveal reveal-delay-1" style="color:var(--cream);">Why hasn't it<br><em>already been done?</em></h2>
+  <div class="tension-grid">
+    <div class="tension-card reveal reveal-delay-1">
+      <div class="tension-tag">Challenge</div>
+      <div class="tension-title">Rent viability</div>
+      <div class="tension-challenge">Quality retail locations carry high rents. The licence + commission model must cover it or the business doesn't work.</div>
+      <div class="tension-response-tag">Response</div>
+      <div class="tension-response">Regional and suburban centres offer viable rents at meaningful foot traffic. Location selection is a deliberate strategic trade-off, not a compromise.</div>
+    </div>
+    <div class="tension-card reveal reveal-delay-2">
+      <div class="tension-tag">Challenge</div>
+      <div class="tension-title">Maker churn</div>
+      <div class="tension-challenge">If makers leave or underperform, curation quality and revenue base erode simultaneously — a compounding risk.</div>
+      <div class="tension-response-tag">Response</div>
+      <div class="tension-response">A waitlist model and active vendor pipeline ensures gaps are filled quickly. Curation standards also improve as patterns become clear.</div>
+    </div>
+    <div class="tension-card reveal reveal-delay-3">
+      <div class="tension-tag">Challenge</div>
+      <div class="tension-title">Brand dilution</div>
+      <div class="tension-challenge">Without rigorous standards, the collective becomes just another gift store. The brand is only as good as the worst product on the shelf.</div>
+      <div class="tension-response-tag">Response</div>
+      <div class="tension-response">Curation standards enforced consistently and with editorial courage. This is a cultural commitment, not just a commercial one.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist" id="waitlist">
+  <div class="waitlist-inner">
+    <div class="section-label">Finding the Common Ground</div>
+    <h2 class="section-heading reveal">Be part of<br>what's coming.</h2>
+    <p class="section-body reveal reveal-delay-1">Whether you're a maker looking for a retail home, or a consumer who's tired of the same stores — Common Ground is being built for you.</p>
+
+    <div class="form-tabs reveal reveal-delay-2">
+      <button class="form-tab active" onclick="setTab(this, 'maker')">I'm a maker</button>
+      <button class="form-tab" onclick="setTab(this, 'consumer')">I'm a consumer</button>
+    </div>
+
+    <div class="email-form reveal reveal-delay-3">
+      <input type="email" class="email-input" id="emailInput" placeholder="your@email.com">
+      <button class="submit-btn" onclick="handleSubmit()">Register Interest</button>
+    </div>
+    <p class="form-note reveal">No spam. No commitment. Just first access when we open doors.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-wordmark">Common <em>Ground</em></div>
+    <div class="footer-tagline">Curated Retail Collective · Australia</div>
+  </div>
+  <div class="footer-right">
+    <div>Concept · 2025</div>
+    <div style="margin-top:4px; color: #5A4A38;">commonground.com.au</div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll behaviour
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Form tabs
+  function setTab(btn, type) {
+    document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const input = document.getElementById('emailInput');
+    input.placeholder = type === 'maker' ? 'your@studio.com' : 'your@email.com';
+  }
+
+  // Submit handler
+  function handleSubmit() {
+    const input = document.getElementById('emailInput');
+    const val = input.value.trim();
+    if (!val || !val.includes('@')) {
+      input.style.borderColor = 'rgba(255,100,50,0.6)';
+      setTimeout(() => input.style.borderColor = '', 1500);
+      return;
+    }
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = 'Registered ✓';
+    btn.style.background = '#3D5A30';
+    btn.style.borderColor = '#3D5A30';
+    input.value = '';
+    input.placeholder = 'Thanks — we\'ll be in touch.';
+    input.disabled = true;
+  }
+</script>
+</body>
+</html>
