@@ -320,32 +320,22 @@
     margin-top: 4px;
   }
   .location-card {
-    padding: 18px 20px;
     background: var(--cream);
     border: 2px solid rgba(139,115,85,0.2);
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    position: relative;
+    transition: border-color 0.3s, background 0.3s;
+    overflow: hidden;
+  }
+  .location-card-header {
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
   }
   .location-card.selected {
     border-color: var(--terra);
     background: #fff;
-  }
-  .location-card.selected::after {
-    content: "✓";
-    position: absolute;
-    top: 12px; right: 14px;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: var(--terra);
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 20px;
-    text-align: center;
   }
   .location-badge {
     font-size: 9px;
@@ -366,13 +356,106 @@
     font-size: 11px;
     color: var(--bark);
     font-weight: 300;
-    margin-bottom: 10px;
+  }
+  .location-price-tag {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
   }
   .location-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--terra);
+    white-space: nowrap;
+  }
+  .location-check-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--terra);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 22px;
+    text-align: center;
+  }
+  .location-card.selected .location-check-icon { display: flex; }
+
+  /* Shelf dropdown */
+  .shelf-dropdown {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--mist);
+    border-top: 0px solid rgba(139,115,85,0.15);
+  }
+  .location-card.selected .shelf-dropdown {
+    max-height: 300px;
+    border-top-width: 1px;
+  }
+  .shelf-dropdown-inner {
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .shelf-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--cream);
+    border: 1.5px solid rgba(139,115,85,0.15);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .shelf-option:hover { border-color: rgba(196,97,58,0.3); }
+  .shelf-option.chosen {
+    border-color: var(--terra);
+    background: #fff;
+  }
+  .shelf-opt-left { flex: 1; }
+  .shelf-opt-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .shelf-opt-desc {
+    font-size: 11px;
+    color: var(--bark);
+    font-weight: 300;
+  }
+  .shelf-opt-price {
     font-size: 13px;
     font-weight: 700;
     color: var(--terra);
-    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .shelf-opt-radio {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(139,115,85,0.35);
+    flex-shrink: 0;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .shelf-option.chosen .shelf-opt-radio {
+    border-color: var(--terra);
+    background: var(--terra);
+  }
+  .shelf-option.chosen .shelf-opt-radio::after {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   /* CONTRACT OPTIONS */
@@ -714,13 +797,13 @@
       <div class="field">
         <label>Online sales channels</label>
         <div class="check-group" id="channels">
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Etsy</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Shopify / own website</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Amazon Handmade</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>eBay</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Instagram Shop</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Facebook Marketplace</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>None</label>
+          <div class="check-pill" data-val="Etsy"><div class="tick"></div>Etsy</div>
+          <div class="check-pill" data-val="Shopify / own website"><div class="tick"></div>Shopify / own website</div>
+          <div class="check-pill" data-val="Amazon Handmade"><div class="tick"></div>Amazon Handmade</div>
+          <div class="check-pill" data-val="eBay"><div class="tick"></div>eBay</div>
+          <div class="check-pill" data-val="Instagram Shop"><div class="tick"></div>Instagram Shop</div>
+          <div class="check-pill" data-val="Facebook Marketplace"><div class="tick"></div>Facebook Marketplace</div>
+          <div class="check-pill" data-val="None"><div class="tick"></div>None</div>
         </div>
       </div>
     </div>
@@ -729,12 +812,12 @@
       <div class="field">
         <label>Social media</label>
         <div class="check-group">
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Instagram</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Facebook</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>TikTok</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>Pinterest</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>YouTube</label>
-          <label class="check-pill" onclick="togglePill(this)"><input type="checkbox"><div class="tick"></div>None</label>
+          <div class="check-pill" data-val="Instagram"><div class="tick"></div>Instagram</div>
+          <div class="check-pill" data-val="Facebook"><div class="tick"></div>Facebook</div>
+          <div class="check-pill" data-val="TikTok"><div class="tick"></div>TikTok</div>
+          <div class="check-pill" data-val="Pinterest"><div class="tick"></div>Pinterest</div>
+          <div class="check-pill" data-val="YouTube"><div class="tick"></div>YouTube</div>
+          <div class="check-pill" data-val="None"><div class="tick"></div>None</div>
         </div>
       </div>
     </div>
@@ -767,53 +850,333 @@
       <label>Preferred Location <span class="req">*</span></label>
       <p style="font-size:12px; color:var(--bark); margin-bottom:14px; font-weight:300;">Select all locations you'd be open to. Pricing is indicative weekly licence fee.</p>
       <div class="location-grid" id="location-grid">
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Doncaster">
-          <div class="location-badge">Inner East · Melbourne</div>
-          <div class="location-name">Doncaster</div>
-          <div class="location-detail">Williamsons Rd, Doncaster · 12km from CBD</div>
-          <div class="location-price">~$400 / wk</div>
+        <div class="location-card" data-val="Westfield Doncaster" data-base="400" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">Inner East · Melbourne</div>
+              <div class="location-name">Doncaster</div>
+              <div class="location-detail">Williamsons Rd, Doncaster · 12km from CBD</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Doncaster">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Doncaster', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Doncaster', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Doncaster', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Southland">
-          <div class="location-badge">South · Melbourne</div>
-          <div class="location-name">Southland</div>
-          <div class="location-detail">Nepean Hwy, Cheltenham · 19km from CBD</div>
-          <div class="location-price">~$400 / wk</div>
+        <div class="location-card" data-val="Westfield Southland" data-base="400" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">South · Melbourne</div>
+              <div class="location-name">Southland</div>
+              <div class="location-detail">Nepean Hwy, Cheltenham · 19km from CBD</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Southland">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Southland', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Southland', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Southland', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Airport West">
-          <div class="location-badge">North West · Melbourne</div>
-          <div class="location-name">Airport West</div>
-          <div class="location-detail">Louis St, Airport West · Northwest suburbs</div>
-          <div class="location-price">~$370 / wk</div>
+        <div class="location-card" data-val="Westfield Airport West" data-base="370" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">North West · Melbourne</div>
+              <div class="location-name">Airport West</div>
+              <div class="location-detail">Louis St, Airport West · Northwest suburbs</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Airport_West">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Airport West', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Airport West', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Airport West', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Knox">
-          <div class="location-badge">East · Melbourne</div>
-          <div class="location-name">Knox</div>
-          <div class="location-detail">Burwood Hwy, Wantirna South · 17km from CBD</div>
-          <div class="location-price">~$370 / wk</div>
+        <div class="location-card" data-val="Westfield Knox" data-base="370" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">East · Melbourne</div>
+              <div class="location-name">Knox</div>
+              <div class="location-detail">Burwood Hwy, Wantirna South · 17km from CBD</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Knox">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Knox', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Knox', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Knox', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Fountain Gate">
-          <div class="location-badge">South East · Melbourne</div>
-          <div class="location-name">Fountain Gate</div>
-          <div class="location-detail">Princes Hwy, Narre Warren · Outer southeast</div>
-          <div class="location-price">~$370 / wk</div>
+        <div class="location-card" data-val="Westfield Fountain Gate" data-base="370" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">South East · Melbourne</div>
+              <div class="location-name">Fountain Gate</div>
+              <div class="location-detail">Princes Hwy, Narre Warren · Outer southeast</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Fountain_Gate">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Fountain Gate', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Fountain Gate', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Fountain Gate', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Plenty Valley">
-          <div class="location-badge">North · Melbourne</div>
-          <div class="location-name">Plenty Valley</div>
-          <div class="location-detail">McDonalds Rd, Mill Park · Outer north</div>
-          <div class="location-price">~$340 / wk</div>
+        <div class="location-card" data-val="Westfield Plenty Valley" data-base="340" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">North · Melbourne</div>
+              <div class="location-name">Plenty Valley</div>
+              <div class="location-detail">McDonalds Rd, Mill Park · Outer north</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Plenty_Valley">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Plenty Valley', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Plenty Valley', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Plenty Valley', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Geelong">
-          <div class="location-badge">Regional · Geelong</div>
-          <div class="location-name">Geelong</div>
-          <div class="location-detail">Moorabool St, Geelong · City centre</div>
-          <div class="location-price">~$300 / wk</div>
+        <div class="location-card" data-val="Westfield Geelong" data-base="300" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">Regional · Geelong</div>
+              <div class="location-name">Geelong</div>
+              <div class="location-detail">Moorabool St, Geelong · City centre</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Geelong">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Geelong', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Geelong', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Geelong', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="location-card" onclick="toggleLocation(this)" data-val="Westfield Geelong Waurn Ponds">
-          <div class="location-badge">Regional · Geelong</div>
-          <div class="location-name">Waurn Ponds</div>
-          <div class="location-detail">Princes Hwy, Waurn Ponds · South Geelong</div>
-          <div class="location-price">~$300 / wk</div>
+        <div class="location-card" data-val="Westfield Geelong Waurn Ponds" data-base="300" onclick="toggleLocation(this, event)">
+          <div class="location-card-header">
+            <div>
+              <div class="location-badge">Regional · Geelong</div>
+              <div class="location-name">Waurn Ponds</div>
+              <div class="location-detail">Princes Hwy, Waurn Ponds · South Geelong</div>
+            </div>
+            <div class="location-price-tag">
+              <span class="location-price">from $150</span>
+              <span class="location-check-icon">✓</span>
+            </div>
+          </div>
+          <div class="shelf-dropdown" id="shelf-Westfield_Geelong_Waurn_Ponds">
+            <div class="shelf-dropdown-inner">
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Geelong Waurn Ponds', 'Single Shelf', 150)" data-price="150">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Single Shelf</div>
+                  <div class="shelf-opt-desc">One shelf face · Approx 89cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$150 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Geelong Waurn Ponds', 'Dual Shelf', 220)" data-price="220">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Dual Shelf</div>
+                  <div class="shelf-opt-desc">Two shelf faces · Approx 178cm wide</div>
+                </div>
+                <div class="shelf-opt-price">$220 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+              <div class="shelf-option" onclick="selectShelf(event, this, 'Westfield Geelong Waurn Ponds', 'Full Shelf Unit', 300)" data-price="300">
+                <div class="shelf-opt-left">
+                  <div class="shelf-opt-name">Full Shelf Unit</div>
+                  <div class="shelf-opt-desc">Complete unit · Floor to ceiling · All faces</div>
+                </div>
+                <div class="shelf-opt-price">$300 / wk</div>
+                <div class="shelf-opt-radio"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -932,8 +1295,26 @@
 
   function prevStep(step) { goToStep(step - 1); }
 
-  function toggleLocation(el) {
+  function toggleLocation(el, event) {
+    // Don't toggle if clicking inside the shelf dropdown
+    if (event && event.target.closest('.shelf-dropdown')) return;
+    const wasSelected = el.classList.contains('selected');
     el.classList.toggle('selected');
+    // If deselected, clear shelf choice
+    if (wasSelected) {
+      el.querySelectorAll('.shelf-option').forEach(o => o.classList.remove('chosen'));
+      el.querySelector('.location-price').textContent = 'from $150';
+    }
+  }
+
+  function selectShelf(event, el, locVal, tierName, price) {
+    event.stopPropagation();
+    const card = el.closest('.location-card');
+    card.querySelectorAll('.shelf-option').forEach(o => o.classList.remove('chosen'));
+    el.classList.add('chosen');
+    card.querySelector('.location-price').textContent = `$${price} / wk`;
+    card.dataset.shelf = tierName;
+    card.dataset.shelfPrice = price;
   }
 
   function selectCard(el, group) {
@@ -945,20 +1326,28 @@
 
   function togglePill(el) {
     el.classList.toggle('checked');
-    el.querySelector('input').checked = el.classList.contains('checked');
   }
+
+  // Pill click delegation — works on div.check-pill elements
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.check-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        this.classList.toggle('checked');
+      });
+    });
+  });
 
   function getChecked(groupId) {
     return Array.from(document.querySelectorAll('#' + groupId + ' .check-pill.checked'))
-      .map(el => el.textContent.trim()).join(', ') || '—';
+      .map(el => el.dataset.val || el.textContent.replace(/[✓]/g,'').trim()).join(', ') || '—';
   }
 
   function buildReview() {
     // locations handled via multi-select
     const con = document.querySelector('.contract-card.selected');
     const pli = document.getElementById('toggle-pli').classList.contains('on') ? 'Yes' : 'No';
-    const channels = Array.from(document.querySelectorAll('#channels .check-pill.checked')).map(e => e.textContent.trim()).join(', ') || '—';
-    const socials = Array.from(document.querySelectorAll('.check-group:not(#channels) .check-pill.checked')).map(e => e.textContent.trim()).join(', ') || '—';
+    const channels = Array.from(document.querySelectorAll('#channels .check-pill.checked')).map(e => e.dataset.val || e.textContent.trim()).join(', ') || '—';
+    const socials = Array.from(document.querySelectorAll('.check-group:not(#channels) .check-pill.checked')).map(e => e.dataset.val || e.textContent.trim()).join(', ') || '—';
 
     document.getElementById('review-content').innerHTML = `
       <div class="review-section">
@@ -986,7 +1375,11 @@
       </div>
       <div class="review-section">
         <div class="review-section-title">Preferences</div>
-        <div class="review-row"><div class="review-key">Location(s)</div><div class="review-val">${Array.from(document.querySelectorAll('.location-card.selected')).map(e => e.dataset.val).join(', ') || '—'}</div></div>
+        ${Array.from(document.querySelectorAll('.location-card.selected')).map(e => `
+          <div class="review-row">
+            <div class="review-key">${e.dataset.val.replace('Westfield ','')}</div>
+            <div class="review-val">${e.dataset.shelf || 'Shelf TBC'} · $${e.dataset.shelfPrice || '—'}/wk</div>
+          </div>`).join('') || '<div class="review-row"><div class="review-key">Location(s)</div><div class="review-val">—</div></div>'}
         <div class="review-row"><div class="review-key">Contract</div><div class="review-val">${con ? con.dataset.val : '—'}</div></div>
         <div class="review-row"><div class="review-key">Notes</div><div class="review-val">${v('f-extra') || '—'}</div></div>
       </div>
