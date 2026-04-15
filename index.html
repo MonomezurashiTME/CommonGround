@@ -852,15 +852,22 @@
     <p class="section-body reveal reveal-delay-1">Whether you're a maker looking for a retail home, or a consumer who's tired of the same stores — Common Ground is being built for you.</p>
 
     <div class="form-tabs reveal reveal-delay-2">
-      <button class="form-tab active" onclick="setTab(this, 'maker')">I'm a maker</button>
-      <button class="form-tab" onclick="setTab(this, 'consumer')">I'm a consumer</button>
+      <button class="form-tab" id="tab-consumer" onclick="setTab('consumer')">I'm a consumer</button>
+      <button class="form-tab" id="tab-maker" onclick="setTab('maker')">I'm a maker</button>
     </div>
 
-    <div class="email-form reveal reveal-delay-3">
-      <input type="email" class="email-input" id="emailInput" placeholder="your@studio.com">
-      <button class="submit-btn" onclick="handleSubmit()">Register Interest</button>
+    <div id="consumer-form" class="reveal reveal-delay-3">
+      <div class="email-form">
+        <input type="email" class="email-input" id="emailInput" placeholder="your@email.com">
+        <button class="submit-btn" onclick="handleSubmit()">Register Interest</button>
+      </div>
+      <p class="form-note">No spam. No commitment. Just first access when we open doors.</p>
     </div>
-    <p class="form-note reveal">No spam. No commitment. Just first access when we open doors.</p>
+
+    <div id="maker-cta" style="display:none;" class="reveal reveal-delay-3">
+      <p style="font-size:15px; color:rgba(245,240,232,0.8); margin-bottom:28px; font-weight:300; line-height:1.8;">Ready to find your retail home? Our application takes about 5 minutes. We review every application personally and respond within 5–7 business days.</p>
+      <a href="apply.html" class="btn-primary" style="display:inline-block; text-decoration:none;">Apply to join →</a>
+    </div>
   </div>
 </section>
 
@@ -892,11 +899,14 @@
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  function setTab(btn, type) {
+  function setTab(type) {
     document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('emailInput').placeholder = type === 'maker' ? 'your@studio.com' : 'your@email.com';
+    document.getElementById('tab-' + type).classList.add('active');
+    document.getElementById('consumer-form').style.display = type === 'consumer' ? 'block' : 'none';
+    document.getElementById('maker-cta').style.display = type === 'maker' ? 'block' : 'none';
   }
+  // Default to consumer
+  setTab('consumer');
 
   function handleSubmit() {
     const input = document.getElementById('emailInput');
