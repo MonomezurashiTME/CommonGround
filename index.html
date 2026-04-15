@@ -119,6 +119,12 @@
     border-radius: 50%;
     background: var(--orange);
     opacity: 0.15;
+    will-change: transform;
+    transition: transform 0.05s linear;
+  }
+  .hero-circle-inner {
+    will-change: transform;
+    transition: transform 0.08s linear;
   }
   .hero-eyebrow {
     font-size: 10px;
@@ -460,6 +466,7 @@
   .why-join .section-label { color: var(--sage-l); }
   .why-join .section-label::after { background: var(--sage-l); }
   .why-join .section-heading { color: var(--cream); }
+  .why-join .section-heading em { color: var(--bark-l); font-style: italic; }
   .why-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -677,15 +684,15 @@
       <p class="section-body reveal reveal-delay-2">Independent makers are talented, prolific, and invisible. Traditional retail requires volume and margin most can't sustain. Markets are inconsistent. Online channels are algorithmically brutal. The infrastructure works against the SME.</p>
       <div class="stat-row">
         <div class="stat-card reveal reveal-delay-1">
-          <div class="stat-num">64%</div>
+          <div class="stat-num" data-count="64" data-suffix="%"><span class="count-val">0</span>%</div>
           <div class="stat-label">of Australian businesses operate as sole traders</div>
         </div>
         <div class="stat-card reveal reveal-delay-2">
-          <div class="stat-num">3 in 4</div>
+          <div class="stat-num" data-text="3 in 4"><span class="count-val">0</span></div>
           <div class="stat-label">consumers prefer local when discovery is easy</div>
         </div>
         <div class="stat-card reveal reveal-delay-3">
-          <div class="stat-num">60%</div>
+          <div class="stat-num" data-count="60" data-suffix="%"><span class="count-val">0</span>%</div>
           <div class="stat-label">of indie makers exit retail within 2 years</div>
         </div>
       </div>
@@ -926,6 +933,80 @@
     input.placeholder = "Thanks — we'll be in touch.";
     input.disabled = true;
   }
+
+  // ── ANIMATED STAT COUNTERS ──
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const text = el.dataset.text;
+    const span = el.querySelector('.count-val');
+    if (!span) return;
+
+    // Special case: non-numeric like "3 in 4"
+    if (text) {
+      let frame = 0;
+      const frames = 40;
+      const texts = ['0','1','2','2 in 3','3 in 4'];
+      const interval = setInterval(() => {
+        frame++;
+        if (frame < texts.length) {
+          span.textContent = texts[frame];
+        } else {
+          span.textContent = '';
+          el.innerHTML = text;
+          clearInterval(interval);
+        }
+      }, 60);
+      return;
+    }
+
+    // Numeric counter with easing
+    const duration = 1400;
+    const startTime = performance.now();
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(eased * target);
+      span.textContent = current;
+      if (progress < 1) requestAnimationFrame(step);
+      else {
+        span.textContent = target;
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Trigger counters when stat cards become visible
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const counters = entry.target.querySelectorAll('[data-count], [data-text]');
+        counters.forEach(c => animateCounter(c));
+        statObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.stat-row').forEach(row => statObserver.observe(row));
+
+  // ── PARALLAX on hero medallion ──
+  const medallion = document.querySelector('.hero-medallion');
+  const circleInner = document.querySelector('.hero-circle-inner');
+  const hero = document.querySelector('.hero');
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const heroH = hero ? hero.offsetHeight : window.innerHeight;
+    if (scrollY > heroH) return; // Only within hero section
+
+    const rate1 = scrollY * 0.18;
+    const rate2 = scrollY * 0.10;
+    if (medallion) medallion.style.transform = `translateY(calc(-50% + ${rate1}px))`;
+    if (circleInner) circleInner.style.transform = `translateY(calc(-50% + ${rate2}px))`;
+  }, { passive: true });
+
 </script>
 </body>
 </html>
