@@ -63,9 +63,11 @@
     font-family: 'Playfair Display', serif;
     font-size: 18px;
     font-weight: 700;
-    color: var(--ink);
+    color: var(--cream);
+    transition: color 0.4s ease;
   }
   .nav-wordmark em { font-style: italic; color: var(--terra); }
+  nav.scrolled .nav-wordmark { color: var(--ink); }
   .nav-links { display: flex; gap: 36px; list-style: none; }
   .nav-links a {
     font-size: 12px;
